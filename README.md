@@ -57,4 +57,45 @@ Use a feature branch per issue, such as `feature/yorgo-pet-profiles` or `feature
 
 ## Current setup status
 
-New private repository created with an initial README. Cloned into the separate Desktop folder. Maria's GitHub account `moussallemmaria` has been invited with write access; she must accept. No Android app scaffold has been generated yet, so the folder is not yet a runnable Android Studio project. The first work package creates it.
+The Android project is set up (Kotlin, Jetpack Compose, Material 3, Navigation Compose, Room with KSP, minSdk 26, targetSdk 37). Package: `com.usj.petcare`.
+
+| Feature | Owner | Status |
+|---|---|---|
+| App setup, navigation, pet profiles | Yorgo | Done on `feature/yorgo-pet-profiles` |
+| Dog breed guide (API) | Maria | In progress on her own branch |
+
+## How to run
+
+1. Open the folder in Android Studio and let Gradle sync.
+2. Run the `app` configuration on an emulator (API 26+).
+3. Unit tests: `./gradlew testDebugUnitTest`.
+
+## Code layout
+
+```
+app/src/main/java/com/usj/petcare/
+  model/                 Pet, Species, PetAge (plain Kotlin, no Android)
+  data/local/            Room: AppDatabase, PetDao, PetEntity
+  data/repository/       PetRepository (the only door to pet data)
+  data/AppContainer.kt   Builds the database and repositories once
+  ui/navigation/         PetCareNavHost: routes and the back stack
+  ui/view_model/         One ViewModel per screen + PetFormValidator
+  ui/pets/               Compose screens: list, detail, add/edit form
+```
+
+Data flow for one change: the screen reports an event (e.g. Save) → the ViewModel validates and calls the repository in `viewModelScope` → the repository converts `Pet` to `PetEntity` and calls the DAO → Room writes the row and its `Flow` emits a new list → the list ViewModel maps it to `PetListUiState` → Compose redraws.
+
+## Feature 1: pet profiles (Yorgo)
+
+- Create, view, edit and delete pet profiles (name, species, breed, birth date, weight, notes).
+- Validation: name required (max 30 chars), weight must be a number between 0 and 150 kg (comma or dot), birth date cannot be in the future.
+- Saved in Room, so profiles are still there after the app is closed and reopened.
+- Unit tests: validation, age labels, repository and the form ViewModel (21 tests).
+
+| Empty list | Validation | Filled form | Pet list |
+|---|---|---|---|
+| ![](docs/screenshots/01-empty-list.png) | ![](docs/screenshots/02-validation-errors.png) | ![](docs/screenshots/03-filled-form.png) | ![](docs/screenshots/04-pet-list.png) |
+
+| Pet detail | Edit | Delete confirmation | After restart |
+|---|---|---|---|
+| ![](docs/screenshots/05-pet-detail.png) | ![](docs/screenshots/06-edit-pet.png) | ![](docs/screenshots/07-delete-dialog.png) | ![](docs/screenshots/08-after-restart.png) |
