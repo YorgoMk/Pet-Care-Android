@@ -1,4 +1,3 @@
-
 package com.usj.petcare.ui.breeds
 
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -160,7 +160,8 @@ fun BreedGuideScreen(
                         ) {
                             Text(
                                 text = uiState.error,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center
                             )
 
                             Spacer(Modifier.height(12.dp))
@@ -196,7 +197,8 @@ fun BreedGuideScreen(
                     ) {
                         Text(
                             "No breeds found. Try another search.",
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -210,7 +212,8 @@ fun BreedGuideScreen(
                     ) {
                         Text(
                             "🐾\n\nSearch for a dog breed to get started!",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }

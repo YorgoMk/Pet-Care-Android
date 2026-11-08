@@ -1,4 +1,3 @@
-
 package com.usj.petcare.ui.navigation
 
 import androidx.compose.runtime.Composable
@@ -12,6 +11,7 @@ import com.usj.petcare.ui.pets.PetDetailRoute
 import com.usj.petcare.ui.pets.PetFormRoute
 import com.usj.petcare.ui.pets.PetListRoute
 
+/** Route names in one place so screens never build route strings themselves. */
 object PetCareDestinations {
 
     const val PET_ID_ARG = "petId"
@@ -27,6 +27,10 @@ object PetCareDestinations {
     fun petEdit(petId: Long) = "pets/$petId/edit"
 }
 
+/**
+ * The navigation graph. Screens only receive callbacks ("the user wants to
+ * open X"); this is the only place that calls navigate() or popBackStack().
+ */
 @Composable
 fun PetCareNavHost(navController: NavHostController) {
 

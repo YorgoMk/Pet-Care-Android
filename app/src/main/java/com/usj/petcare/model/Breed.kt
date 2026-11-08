@@ -1,4 +1,3 @@
-
 package com.usj.petcare.model
 
 data class Breed(

@@ -1,4 +1,3 @@
-
 package com.usj.petcare.ui.view_model
 
 import androidx.lifecycle.ViewModel
@@ -12,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
+import retrofit2.HttpException
 
 data class BreedUiState(
     val query: String = "",
@@ -21,6 +21,10 @@ data class BreedUiState(
     val hasSearched: Boolean = false
 )
 
+/**
+ * Owns the breed guide screen state: the search text, the results,
+ * whether a request is running, and the error message if it failed.
+ */
 class BreedViewModel(
     private val repository: BreedRepository
 ) : ViewModel() {
@@ -77,6 +81,14 @@ class BreedViewModel(
                         error = "No internet connection. Please check your connection and try again."
                     )
                 }
+            } catch (exception: HttpException) {
+                _uiState.update {
+                    it.copy(
+                        breeds = emptyList(),
+                        isLoading = false,
+                        error = httpErrorMessage(exception.code())
+                    )
+                }
             } catch (exception: Exception) {
                 _uiState.update {
                     it.copy(
@@ -91,5 +103,14 @@ class BreedViewModel(
 
     fun retrySearch() {
         searchBreeds(_uiState.value.query)
+    }
+
+    companion object {
+        /** Turns an HTTP status code into a message the user can act on. */
+        fun httpErrorMessage(code: Int): String = when (code) {
+            401, 403 -> "The breed service rejected the API key (error $code). Check DOG_API_KEY in local.properties."
+            in 500..599 -> "The breed service is not responding (error $code). Please try again later."
+            else -> "The breed search failed (error $code). Please try again."
+        }
     }
 }

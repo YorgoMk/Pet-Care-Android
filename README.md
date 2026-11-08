@@ -61,12 +61,17 @@ The Android project is set up (Kotlin, Jetpack Compose, Material 3, Navigation C
 
 | Feature | Owner | Status |
 |---|---|---|
-| App setup, navigation, pet profiles | Yorgo | Done on `feature/yorgo-pet-profiles` |
-| Dog breed guide (API) | Maria | In progress on her own branch |
+| App setup, navigation, pet profiles | Yorgo | Done (merged) |
+| Dog breed guide (API) | Maria | Done (merged) |
 
 ## How to run
 
 1. Open the folder in Android Studio and let Gradle sync.
+1. For the breed guide, add your TheDogAPI key to `local.properties` (never commit it; the file is in `.gitignore`):
+   ```
+   DOG_API_KEY=your_key_here
+   ```
+   Without it, the breed search shows "The breed service rejected the API key".
 2. Run the `app` configuration on an emulator (API 26+).
 3. Unit tests: `./gradlew testDebugUnitTest`.
 
@@ -81,6 +86,9 @@ app/src/main/java/com/usj/petcare/
   ui/navigation/         PetCareNavHost: routes and the back stack
   ui/view_model/         One ViewModel per screen + PetFormValidator
   ui/pets/               Compose screens: list, detail, add/edit form
+  data/remote/           Retrofit: DogApiService, DogApiClient (adds the key), BreedDto
+  data/repository/BreedRepository.kt   Maps BreedDto to Breed
+  ui/breeds/             Compose screen: breed guide search
 ```
 
 Data flow for one change: the screen reports an event (e.g. Save) → the ViewModel validates and calls the repository in `viewModelScope` → the repository converts `Pet` to `PetEntity` and calls the DAO → Room writes the row and its `Flow` emits a new list → the list ViewModel maps it to `PetListUiState` → Compose redraws.
@@ -99,3 +107,17 @@ Data flow for one change: the screen reports an event (e.g. Save) → the ViewMo
 | Pet detail | Edit | Delete confirmation | After restart |
 |---|---|---|---|
 | ![](docs/screenshots/05-pet-detail.png) | ![](docs/screenshots/06-edit-pet.png) | ![](docs/screenshots/07-delete-dialog.png) | ![](docs/screenshots/08-after-restart.png) |
+
+## Feature 2: dog breed guide (Maria)
+
+- Opened from the paw icon on "My pets". The user types a breed name and taps Search.
+- `GET https://api.thedogapi.com/v1/breeds/search?q=...` with Retrofit and Gson. `DogApiClient` adds the `x-api-key` header from `BuildConfig.DOG_API_KEY`, which Gradle reads from `local.properties`.
+- `BreedRepository` maps `BreedDto` to `Breed` (name, group, temperament, life span).
+- `BreedViewModel` keeps one `BreedUiState` (query, results, loading flag, error, whether a search ran). The screen shows: start message, loading spinner, results, "No breeds found", or an error with Retry.
+- Errors are classified: no connection, rejected API key (401/403), server error (5xx, with the code).
+- Pet profiles keep working offline; only this screen needs the internet.
+- Unit tests: repository mapping and ViewModel states, including error then Retry (11 tests).
+
+| Entry point | Start | Results | No match | Offline error |
+|---|---|---|---|---|
+| ![](docs/screenshots/09-pet-list-guide-button.png) | ![](docs/screenshots/10-breed-start.png) | ![](docs/screenshots/11-breed-results.png) | ![](docs/screenshots/12-breed-no-match.png) | ![](docs/screenshots/13-breed-error.png) |
