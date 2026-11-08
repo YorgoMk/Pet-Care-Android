@@ -1,4 +1,3 @@
-
 package com.usj.petcare.data
 
 import android.content.Context
@@ -7,6 +6,10 @@ import com.usj.petcare.data.remote.DogApiClient
 import com.usj.petcare.data.repository.BreedRepository
 import com.usj.petcare.data.repository.PetRepository
 
+/**
+ * Manual dependency container: builds each data object once and hands it to
+ * the ViewModels. No dependency-injection library is needed at this size.
+ */
 class AppContainer(context: Context) {
 
     private val database: AppDatabase by lazy {

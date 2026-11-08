@@ -1,4 +1,3 @@
-
 import java.util.Properties
 
 plugins {
@@ -7,7 +6,7 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-// Read the API key from local.properties
+// Read the Dog API key from local.properties (never committed: it is in .gitignore).
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 
@@ -28,6 +27,7 @@ android {
 
     defaultConfig {
         applicationId = "com.usj.petcare"
+        // 26 gives us java.time (LocalDate) without extra desugaring setup.
         minSdk = 26
         targetSdk = 37
         versionCode = 1
@@ -35,6 +35,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
+        // Available in code as BuildConfig.DOG_API_KEY. Empty if the line is missing.
         buildConfigField(
             "String",
             "DOG_API_KEY",

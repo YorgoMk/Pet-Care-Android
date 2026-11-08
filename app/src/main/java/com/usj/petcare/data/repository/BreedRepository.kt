@@ -1,9 +1,12 @@
-
 package com.usj.petcare.data.repository
 
 import com.usj.petcare.data.remote.DogApiService
 import com.usj.petcare.model.Breed
 
+/**
+ * Calls the Dog API and maps each BreedDto (JSON shape) to a Breed (what the UI shows).
+ * Network errors are not caught here: the ViewModel decides what message to show.
+ */
 class BreedRepository(
     private val api: DogApiService
 ) {
