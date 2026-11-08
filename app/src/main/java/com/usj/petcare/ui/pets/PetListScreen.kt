@@ -1,3 +1,4 @@
+
 package com.usj.petcare.ui.pets
 
 import androidx.compose.foundation.layout.Arrangement
@@ -16,11 +17,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -44,15 +47,27 @@ import com.usj.petcare.ui.view_model.PetListUiState
 import com.usj.petcare.ui.view_model.PetListViewModel
 import java.time.LocalDate
 
-/** Connects the screen to its ViewModel. The screen below stays free of ViewModel code. */
+/**
+ * Connects the screen to its ViewModel.
+ * The screen below stays free of ViewModel code.
+ */
 @Composable
 fun PetListRoute(
     onAddPet: () -> Unit,
     onOpenPet: (Long) -> Unit,
-    viewModel: PetListViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    onOpenBreedGuide: () -> Unit,
+    viewModel: PetListViewModel = viewModel(
+        factory = AppViewModelProvider.Factory
+    )
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    PetListScreen(uiState = uiState, onAddPet = onAddPet, onOpenPet = onOpenPet)
+
+    PetListScreen(
+        uiState = uiState,
+        onAddPet = onAddPet,
+        onOpenPet = onOpenPet,
+        onOpenBreedGuide = onOpenBreedGuide
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,26 +76,58 @@ fun PetListScreen(
     uiState: PetListUiState,
     onAddPet: () -> Unit,
     onOpenPet: (Long) -> Unit,
+    onOpenBreedGuide: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { TopAppBar(title = { Text("My pets") }) },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("My pets")
+                },
+                actions = {
+                    IconButton(
+                        onClick = onOpenBreedGuide
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Pets,
+                            contentDescription = "Open Breed Guide"
+                        )
+                    }
+                }
+            )
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onAddPet,
-                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                text = { Text("Add pet") }
+                icon = {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = null
+                    )
+                },
+                text = {
+                    Text("Add pet")
+                }
             )
         }
     ) { innerPadding ->
-        when (uiState) {
-            PetListUiState.Loading -> Box(
-                Modifier.fillMaxSize().padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) { CircularProgressIndicator() }
 
-            PetListUiState.Empty -> EmptyPets(Modifier.padding(innerPadding))
+        when (uiState) {
+
+            PetListUiState.Loading -> Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+
+            PetListUiState.Empty -> EmptyPets(
+                Modifier.padding(innerPadding)
+            )
 
             is PetListUiState.Content -> PetList(
                 pets = uiState.pets,
@@ -92,41 +139,70 @@ fun PetListScreen(
 }
 
 @Composable
-private fun PetList(pets: List<Pet>, onOpenPet: (Long) -> Unit, contentPadding: PaddingValues) {
-    val today = remember { LocalDate.now() }
+private fun PetList(
+    pets: List<Pet>,
+    onOpenPet: (Long) -> Unit,
+    contentPadding: PaddingValues
+) {
+    val today = remember {
+        LocalDate.now()
+    }
+
     LazyColumn(
         contentPadding = PaddingValues(
             start = 16.dp,
             end = 16.dp,
             top = contentPadding.calculateTopPadding() + 8.dp,
-            // Leave room so the last card is not hidden behind the "Add pet" button.
+            // Leave room so the last card is not hidden behind the Add Pet button.
             bottom = contentPadding.calculateBottomPadding() + 88.dp
         ),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // key = pet.id lets Compose track each pet when the list changes.
         items(pets, key = { it.id }) { pet ->
-            PetCard(pet = pet, today = today, onClick = { onOpenPet(pet.id) })
+            PetCard(
+                pet = pet,
+                today = today,
+                onClick = {
+                    onOpenPet(pet.id)
+                }
+            )
         }
     }
 }
 
 @Composable
-private fun PetCard(pet: Pet, today: LocalDate, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+private fun PetCard(
+    pet: Pet,
+    today: LocalDate,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             SpeciesAvatar(pet.species)
+
             Spacer(Modifier.width(16.dp))
-            Column(Modifier.weight(1f)) {
-                Text(pet.name, style = MaterialTheme.typography.titleMedium)
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    pet.name,
+                    style = MaterialTheme.typography.titleMedium
+                )
+
                 Text(
                     pet.speciesAndBreed(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+
                 pet.birthDate?.let {
                     Text(
                         PetAge.describe(it, today),
@@ -135,22 +211,40 @@ private fun PetCard(pet: Pet, today: LocalDate, onClick: () -> Unit) {
                     )
                 }
             }
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null
+            )
         }
     }
 }
 
 @Composable
-private fun EmptyPets(modifier: Modifier = Modifier) {
+private fun EmptyPets(
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = modifier.fillMaxSize().padding(32.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(32.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("🐾", style = MaterialTheme.typography.displayMedium)
+        Text(
+            "🐾",
+            style = MaterialTheme.typography.displayMedium
+        )
+
         Spacer(Modifier.height(16.dp))
-        Text("No pets yet", style = MaterialTheme.typography.titleLarge)
+
+        Text(
+            "No pets yet",
+            style = MaterialTheme.typography.titleLarge
+        )
+
         Spacer(Modifier.height(8.dp))
+
         Text(
             "Tap \"Add pet\" to create your first pet profile.",
             style = MaterialTheme.typography.bodyMedium,
@@ -167,12 +261,26 @@ private fun PetListPreview() {
         PetListScreen(
             uiState = PetListUiState.Content(
                 listOf(
-                    Pet(1, "Luna", Species.DOG, "Golden Retriever", LocalDate.of(2022, 3, 14), 28.5),
-                    Pet(2, "Milo", Species.CAT, null, LocalDate.of(2024, 6, 1))
+                    Pet(
+                        1,
+                        "Luna",
+                        Species.DOG,
+                        "Golden Retriever",
+                        LocalDate.of(2022, 3, 14),
+                        28.5
+                    ),
+                    Pet(
+                        2,
+                        "Milo",
+                        Species.CAT,
+                        null,
+                        LocalDate.of(2024, 6, 1)
+                    )
                 )
             ),
             onAddPet = {},
-            onOpenPet = {}
+            onOpenPet = {},
+            onOpenBreedGuide = {}
         )
     }
 }
@@ -180,5 +288,12 @@ private fun PetListPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun PetListEmptyPreview() {
-    PetCareTheme { PetListScreen(uiState = PetListUiState.Empty, onAddPet = {}, onOpenPet = {}) }
+    PetCareTheme {
+        PetListScreen(
+            uiState = PetListUiState.Empty,
+            onAddPet = {},
+            onOpenPet = {},
+            onOpenBreedGuide = {}
+        )
+    }
 }
