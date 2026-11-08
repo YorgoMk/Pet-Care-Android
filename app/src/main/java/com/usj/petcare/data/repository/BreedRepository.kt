@@ -17,10 +17,17 @@ class BreedRepository(
                 id = dto.id.toString(),
                 name = dto.name,
                 temperament = dto.temperament,
-                lifeSpan = dto.lifeSpan,
+                lifeSpan = formatLifeSpan(dto.lifeSpan),
                 breedGroup = dto.breedGroup,
                 imageUrl = dto.image?.url
             )
         }
+    }
+
+    /** The API sends "10 - 12 years" for some breeds and "10-12" for others; always show the unit. */
+    private fun formatLifeSpan(raw: String?): String? {
+        val text = raw?.trim().orEmpty()
+        if (text.isEmpty()) return null
+        return if (text.contains("year", ignoreCase = true)) text else "$text years"
     }
 }

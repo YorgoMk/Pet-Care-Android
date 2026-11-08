@@ -41,6 +41,12 @@ class BreedRepositoryTest {
     }
 
     @Test
+    fun lifeSpanAlwaysHasAUnit() = runTest {
+        val api = FakeDogApiService(listOf(BreedDto(id = 1, name = "Akita", lifeSpan = "10-12")))
+        assertEquals("10-12 years", BreedRepository(api).searchBreeds("akita").single().lifeSpan)
+    }
+
+    @Test
     fun passesTheQueryToTheApi() = runTest {
         val api = FakeDogApiService()
         BreedRepository(api).searchBreeds("beagle")
