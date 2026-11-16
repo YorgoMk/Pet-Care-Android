@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-/** The three things the "My pets" screen can show. */
 sealed interface PetListUiState {
     data object Loading : PetListUiState
     data object Empty : PetListUiState
@@ -17,8 +16,6 @@ sealed interface PetListUiState {
 }
 
 class PetListViewModel(repository: PetRepository) : ViewModel() {
-
-    /** Room emits a new list after every insert, edit or delete, so the screen updates by itself. */
     val uiState: StateFlow<PetListUiState> = repository.observePets()
         .map { pets -> if (pets.isEmpty()) PetListUiState.Empty else PetListUiState.Content(pets) }
         .stateIn(

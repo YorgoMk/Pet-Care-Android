@@ -11,9 +11,7 @@ import com.usj.petcare.ui.pets.PetDetailRoute
 import com.usj.petcare.ui.pets.PetFormRoute
 import com.usj.petcare.ui.pets.PetListRoute
 
-/** Route names in one place so screens never build route strings themselves. */
 object PetCareDestinations {
-
     const val PET_ID_ARG = "petId"
 
     const val PET_LIST = "pets"
@@ -27,13 +25,8 @@ object PetCareDestinations {
     fun petEdit(petId: Long) = "pets/$petId/edit"
 }
 
-/**
- * The navigation graph. Screens only receive callbacks ("the user wants to
- * open X"); this is the only place that calls navigate() or popBackStack().
- */
 @Composable
 fun PetCareNavHost(navController: NavHostController) {
-
     val petIdArgument = listOf(
         navArgument(PetCareDestinations.PET_ID_ARG) {
             type = NavType.LongType
@@ -44,8 +37,6 @@ fun PetCareNavHost(navController: NavHostController) {
         navController = navController,
         startDestination = PetCareDestinations.PET_LIST
     ) {
-
-        // My Pets screen
         composable(PetCareDestinations.PET_LIST) {
             PetListRoute(
                 onAddPet = {
@@ -62,7 +53,6 @@ fun PetCareNavHost(navController: NavHostController) {
             )
         }
 
-        // Breed Guide screen
         composable(PetCareDestinations.BREED_GUIDE) {
             BreedGuideRoute(
                 onBack = {
@@ -71,7 +61,6 @@ fun PetCareNavHost(navController: NavHostController) {
             )
         }
 
-        // Add Pet screen
         composable(PetCareDestinations.PET_ADD) {
             PetFormRoute(
                 onBack = {
@@ -83,7 +72,6 @@ fun PetCareNavHost(navController: NavHostController) {
             )
         }
 
-        // Pet Details screen
         composable(
             PetCareDestinations.PET_DETAIL,
             arguments = petIdArgument
@@ -105,7 +93,6 @@ fun PetCareNavHost(navController: NavHostController) {
             )
         }
 
-        // Edit Pet screen
         composable(
             PetCareDestinations.PET_EDIT,
             arguments = petIdArgument

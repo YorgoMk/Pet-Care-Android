@@ -10,7 +10,6 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 class BreedRepositoryTest {
-
     @Test
     fun mapsDtoFieldsToBreed() = runTest {
         val api = FakeDogApiService(

@@ -16,7 +16,6 @@ import com.usj.petcare.model.Pet
 import com.usj.petcare.model.Species
 import java.time.format.DateTimeFormatter
 
-/** Round avatar showing the species emoji. Reused by the list and the detail screen. */
 @Composable
 fun SpeciesAvatar(species: Species, modifier: Modifier = Modifier, size: Dp = 48.dp) {
     Box(
@@ -29,7 +28,6 @@ fun SpeciesAvatar(species: Species, modifier: Modifier = Modifier, size: Dp = 48
     }
 }
 
-/** "Dog · Golden Retriever", or just "Dog" when no breed was entered. */
 fun Pet.speciesAndBreed(): String =
     if (breed.isNullOrBlank()) species.label else "${species.label} · $breed"
 

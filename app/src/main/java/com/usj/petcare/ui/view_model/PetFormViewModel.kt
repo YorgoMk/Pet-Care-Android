@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/** Everything the add/edit form shows, including validation messages. */
 data class PetFormUiState(
     val name: String = "",
     val species: Species = Species.DOG,
@@ -33,8 +32,6 @@ class PetFormViewModel(
     private val repository: PetRepository,
     private val today: () -> LocalDate = { LocalDate.now() }
 ) : ViewModel() {
-
-    /** null when adding a new pet; the pet's id when editing. */
     private val petId: Long? = savedStateHandle[PetCareDestinations.PET_ID_ARG]
 
     private val _uiState = MutableStateFlow(PetFormUiState(isEditing = petId != null, isLoading = petId != null))
@@ -62,7 +59,6 @@ class PetFormViewModel(
         }
     }
 
-    // Each field change clears that field's error so the message disappears while typing.
     fun onNameChange(value: String) =
         _uiState.update { it.copy(name = value, errors = it.errors.copy(name = null)) }
 
@@ -96,7 +92,7 @@ class PetFormViewModel(
         )
         viewModelScope.launch {
             repository.savePet(pet)
-            // The screen watches isSaved and navigates back once the write is finished.
+
             _uiState.update { it.copy(isSaved = true) }
         }
     }

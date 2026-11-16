@@ -6,10 +6,6 @@ import com.usj.petcare.model.Pet
 import com.usj.petcare.model.Species
 import java.time.LocalDate
 
-/**
- * One row of the "pets" table. Room cannot store LocalDate or enums directly,
- * so we store simple types and convert in toDomain() / toEntity().
- */
 @Entity(tableName = "pets")
 data class PetEntity(
     @PrimaryKey(autoGenerate = true)

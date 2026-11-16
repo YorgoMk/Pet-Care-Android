@@ -22,7 +22,6 @@ private val DarkColors = darkColorScheme(
     secondaryContainer = Orange30
 )
 
-/** App-wide Material 3 theme. Follows the system light/dark setting. */
 @Composable
 fun PetCareTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

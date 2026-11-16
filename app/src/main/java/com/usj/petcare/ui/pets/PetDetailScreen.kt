@@ -57,7 +57,6 @@ fun PetDetailRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // After a delete there is nothing left to show, so return to the list.
     LaunchedEffect(uiState) {
         if (uiState == PetDetailUiState.Deleted) onBack()
     }
@@ -79,7 +78,6 @@ fun PetDetailScreen(
     onConfirmDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Small UI-only state: survives rotation, does not belong in the database.
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
     val pet = (uiState as? PetDetailUiState.Content)?.pet
 

@@ -27,7 +27,6 @@ class PetFormViewModelTest {
     private val repository = PetRepository(FakePetDao())
     private val today = { LocalDate.of(2026, 11, 7) }
 
-    // viewModelScope runs on Dispatchers.Main, which does not exist in plain unit tests.
     @Before
     fun setUp() = Dispatchers.setMain(UnconfinedTestDispatcher())
 

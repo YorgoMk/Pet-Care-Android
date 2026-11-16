@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
-/** In-memory stand-in for Room, so tests run on the computer without an emulator. */
 class FakePetDao : PetDao {
     private val rows = MutableStateFlow<List<PetEntity>>(emptyList())
     private var nextId = 1L
@@ -18,7 +17,6 @@ class FakePetDao : PetDao {
     override suspend fun getById(id: Long): PetEntity? = rows.value.find { it.id == id }
 
     override suspend fun upsert(pet: PetEntity): Long {
-        // Mirrors Room: new rows get an id, updates return -1.
         return if (pet.id == 0L) {
             val saved = pet.copy(id = nextId++)
             rows.value = rows.value + saved
