@@ -64,7 +64,6 @@ fun PetFormRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // The ViewModel sets isSaved only after Room finished writing; then we leave the form.
     LaunchedEffect(uiState.isSaved) {
         if (uiState.isSaved) onSaved()
     }
@@ -158,7 +157,6 @@ fun PetFormScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Read-only field: tapping the calendar icon opens the date picker.
             OutlinedTextField(
                 value = uiState.birthDate?.format(BirthDateFormatter) ?: "",
                 onValueChange = {},
@@ -226,7 +224,6 @@ private fun BirthDatePickerDialog(
     onDismiss: () -> Unit,
     onDateSelected: (LocalDate) -> Unit
 ) {
-    // DatePicker works in UTC milliseconds; we convert to and from LocalDate here.
     val todayMillis = LocalDate.now().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
     val state = rememberDatePickerState(
         initialSelectedDateMillis = initialDate?.atStartOfDay(ZoneOffset.UTC)?.toInstant()?.toEpochMilli(),

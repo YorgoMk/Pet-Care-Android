@@ -7,10 +7,6 @@ import androidx.room.RoomDatabase
 import com.usj.petcare.data.local.dao.PetDao
 import com.usj.petcare.data.local.entity.PetEntity
 
-/**
- * The single Room database of the app. New tables (care tasks, logs) will be
- * added to `entities` and the version increased when they arrive.
- */
 @Database(entities = [PetEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun petDao(): PetDao

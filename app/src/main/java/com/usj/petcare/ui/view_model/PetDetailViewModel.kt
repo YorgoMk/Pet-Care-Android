@@ -17,7 +17,7 @@ sealed interface PetDetailUiState {
     data object Loading : PetDetailUiState
     data class Content(val pet: Pet) : PetDetailUiState
     data object NotFound : PetDetailUiState
-    /** Set after the user confirms delete, so the screen knows to go back. */
+
     data object Deleted : PetDetailUiState
 }
 
@@ -25,7 +25,6 @@ class PetDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: PetRepository
 ) : ViewModel() {
-
     private val petId: Long = checkNotNull(savedStateHandle[PetCareDestinations.PET_ID_ARG])
     private val deleted = MutableStateFlow(false)
 
@@ -43,7 +42,6 @@ class PetDetailViewModel(
         )
 
     fun deletePet() {
-        // Mark as deleted first so the screen never flashes "not found".
         deleted.value = true
         viewModelScope.launch { repository.deletePet(petId) }
     }

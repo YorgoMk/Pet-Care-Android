@@ -10,7 +10,6 @@ data class PetFormErrors(
     val hasErrors: Boolean get() = name != null || weight != null || birthDate != null
 }
 
-/** Pure validation rules, kept apart from the ViewModel so they are easy to unit test. */
 object PetFormValidator {
     const val MAX_NAME_LENGTH = 30
     const val MAX_WEIGHT_KG = 150.0
@@ -37,6 +36,5 @@ object PetFormValidator {
         return PetFormErrors(name = nameError, weight = weightError, birthDate = birthDateError)
     }
 
-    /** Accepts "4.5" and "4,5" (comma keyboards); returns null for anything else. */
     fun parseWeight(text: String): Double? = text.trim().replace(',', '.').toDoubleOrNull()
 }

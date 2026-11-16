@@ -29,7 +29,6 @@ class BreedViewModelTest {
     )
     private val viewModel by lazy { BreedViewModel(BreedRepository(api)) }
 
-    // viewModelScope runs on Dispatchers.Main, which does not exist in plain unit tests.
     @Before
     fun setUp() = Dispatchers.setMain(UnconfinedTestDispatcher())
 

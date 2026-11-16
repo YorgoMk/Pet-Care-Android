@@ -7,14 +7,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.usj.petcare.PetCareApplication
 
-/**
- * Tells Compose how to build each ViewModel with its repository.
- * createSavedStateHandle() gives the ViewModel the navigation arguments (e.g. petId).
- */
 object AppViewModelProvider {
-
     val Factory = viewModelFactory {
-
         initializer {
             PetListViewModel(
                 petCareApplication().container.petRepository

@@ -46,10 +46,6 @@ import com.usj.petcare.ui.view_model.PetListUiState
 import com.usj.petcare.ui.view_model.PetListViewModel
 import java.time.LocalDate
 
-/**
- * Connects the screen to its ViewModel.
- * The screen below stays free of ViewModel code.
- */
 @Composable
 fun PetListRoute(
     onAddPet: () -> Unit,
@@ -114,7 +110,6 @@ fun PetListScreen(
     ) { innerPadding ->
 
         when (uiState) {
-
             PetListUiState.Loading -> Box(
                 Modifier
                     .fillMaxSize()
@@ -152,12 +147,11 @@ private fun PetList(
             start = 16.dp,
             end = 16.dp,
             top = contentPadding.calculateTopPadding() + 8.dp,
-            // Leave room so the last card is not hidden behind the Add Pet button.
+
             bottom = contentPadding.calculateBottomPadding() + 88.dp
         ),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // key = pet.id lets Compose track each pet when the list changes.
         items(pets, key = { it.id }) { pet ->
             PetCard(
                 pet = pet,

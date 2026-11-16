@@ -21,14 +21,9 @@ data class BreedUiState(
     val hasSearched: Boolean = false
 )
 
-/**
- * Owns the breed guide screen state: the search text, the results,
- * whether a request is running, and the error message if it failed.
- */
 class BreedViewModel(
     private val repository: BreedRepository
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(BreedUiState())
     val uiState: StateFlow<BreedUiState> = _uiState.asStateFlow()
 
@@ -106,7 +101,6 @@ class BreedViewModel(
     }
 
     companion object {
-        /** Turns an HTTP status code into a message the user can act on. */
         fun httpErrorMessage(code: Int): String = when (code) {
             401, 403 -> "The breed service rejected the API key (error $code). Check DOG_API_KEY in local.properties."
             in 500..599 -> "The breed service is not responding (error $code). Please try again later."

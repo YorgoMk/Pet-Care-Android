@@ -92,7 +92,6 @@ fun BreedGuideScreen(
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-
             Text(
                 text = "Discover dog breeds",
                 style = MaterialTheme.typography.headlineSmall,

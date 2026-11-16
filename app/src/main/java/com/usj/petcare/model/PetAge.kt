@@ -3,7 +3,6 @@ package com.usj.petcare.model
 import java.time.LocalDate
 import java.time.Period
 
-/** Turns a birth date into a short label such as "2 years 3 months" or "5 weeks". */
 object PetAge {
     fun describe(birthDate: LocalDate, today: LocalDate): String {
         if (birthDate.isAfter(today)) return "Not born yet"
